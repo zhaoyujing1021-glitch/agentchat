@@ -106,7 +106,7 @@ body {
 
 /*Navbar*/
 .navbar {
-    height: 64px;
+    height: 100%;
     display: flex;
     align-items: center;
     justify-content: space-between;
@@ -130,7 +130,21 @@ body {
 
 
 /*main  */
-
+.backend-layout {
+  height: 100vh;
+  .el-header{
+    height: 74px !important;
+  }
+  .main-container {
+    height: 100%;
+    .content-container {
+      padding: 20px;
+      background-color: #fff;
+      min-height: calc(100% - 74px);
+      box-sizing: border-box;
+    }
+  }
+}
 
 
 /*PageHead*/

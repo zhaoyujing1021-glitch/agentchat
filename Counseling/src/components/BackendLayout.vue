@@ -6,7 +6,7 @@
         <el-header>
           <Navbar />
         </el-header>
-        <el-main>
+        <el-main class="main-content">
           <div class="content-container">
             <router-view />
           </div>
@@ -21,19 +21,3 @@ import Sidebar from './Sidebar.vue'
 import Navbar from './Navbar.vue'
 </script>
 
-<style lang="scss" scoped>
-.backend-layout {
-  height: 100vh;
-
-  .main-container {
-    height: 100%;
-  
-    .content-container {
-      padding: 20px;
-      background-color: #fff;
-      min-height: calc(100% - 74px);
-      box-sizing: border-box;
-    }
-  }
-}
-</style>

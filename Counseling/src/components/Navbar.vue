@@ -1,7 +1,8 @@
 <template>
   <div class="navbar">
     <div class="flex-box">
-      <el-button>
+      <!-- 绑定点击事件 -->
+      <el-button @click="handleCollapse">
         <el-icon><Expand /></el-icon>
       </el-button>
       <p class="page-titie">导航栏</p>
@@ -24,11 +25,18 @@
 </template>
 
 <script setup>
-import {ref} from 'vue'
-const handleCommand =(command) =>{
-  if(command === 'logout')
-  console.log(key)
-  const currentRoute = router.options.routes[0] 
-  router.push(`${currentRoute.path}/${key.index}`)
+import { useAdminStore } from '@/stores/admin'
+
+const adminStore = useAdminStore()
+
+
+const handleCollapse = () => {
+  adminStore.toggleCollapse()
+}
+
+const handleCommand = (command) => {
+  if (command === 'logout') {
+
+  }
 }
 </script>
