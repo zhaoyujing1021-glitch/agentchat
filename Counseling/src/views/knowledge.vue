@@ -2,7 +2,7 @@
   <div>
     <PageHead title="知识文章">
       <template #buttons>
-        <el-button type="primary">新增</el-button>
+        <el-button @click="dialogVisible=true" type="primary">新增</el-button>
         <el-button type="primary">编辑</el-button>
       </template>
     </PageHead>
@@ -43,6 +43,7 @@
       :total="pagination.total"
       @change="handleChange"
       />
+      <ArticleDialog v-model:modelValue="dialogVisible" />
   </div>
 </template>
 
@@ -51,6 +52,7 @@ import { onMounted, ref, reactive } from 'vue' // 1. 记得引入 reactive
 import PageHead from '@/components/PageHead.vue'
 import TableSearch from '@/components/TableSearch.vue'
 import { categoryTree, articlePage} from '@/api/admin'
+import ArticleDialog from '@/components/ArticleDialog.vue'
 
 const formItem = [
   { comp: 'input', prop: 'title', label: 'タイトル', placeholder: 'タイトル入力' },
@@ -101,6 +103,9 @@ const categoryMap = reactive({})
 const categoryList = ref([])
 //列表数据
 const tableData =ref([])
+
+// 新增和编辑
+const dialogVisible = ref(false)
 
 onMounted(async () => {
     const data = await categoryTree()
