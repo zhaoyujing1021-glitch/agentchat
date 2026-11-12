@@ -17,6 +17,7 @@
           <el-form-item label="文章摘要" prop="summary">
               <el-input type="textarea" v-model="formData.summary" placeholder="请输入文章摘要(可选)" maxlength="1000" show-word-limit :row="4" clearable />
           </el-form-item>
+          
       </el-form>
     </el-dialog>3
 </template>

@@ -74,11 +74,13 @@ const handleChange = (page) => {
 }
 
 // 分页参数
-const pagination = reactive({
+const pagination = reactive(
+  {
   currentPage: 1,
   size: 10,
   total: 0
-})
+  }
+)
 
 
 const handleSearch =async (formData) => {
