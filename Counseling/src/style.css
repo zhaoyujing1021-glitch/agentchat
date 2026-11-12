@@ -265,5 +265,11 @@ body {
     color: #8b949e;
     background: #f6f8fa;
 }
+.cover-image {
+    width: 200px;
+    height: 120px;
+    display: block;
+}
+
 
 /* views/ArticleDialog----end------------------- */

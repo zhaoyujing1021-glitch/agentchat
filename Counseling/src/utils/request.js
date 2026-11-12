@@ -5,7 +5,7 @@ import{ElMessage} from 'element-plus'
 
 const service = axios.create({
     baseURL: '/api',//请求前缀
-    timeout: 300000,//请求超时时间
+    timeout: 50000,//请求超时时间
 })
 
 // 请求拦截器
