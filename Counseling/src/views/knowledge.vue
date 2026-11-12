@@ -43,7 +43,7 @@
       :total="pagination.total"
       @change="handleChange"
       />
-      <ArticleDialog v-model:modelValue="dialogVisible" />
+      <ArticleDialog v-model:modelValue="dialogVisible" :categories="categories" />
   </div>
 </template>
 
