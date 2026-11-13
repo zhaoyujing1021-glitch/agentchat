@@ -48,8 +48,6 @@
                 </div>
             </div>
           </el-form-item>
-
-          <!-- 修复：去掉了外面多余的 label 嵌套，直接引入编辑器，避免“文章内容”文字重复 -->
           <el-form-item label="文章内容" prop="content">
               <RichTextEditor v-model="formData.content" :maxLength="5000" style="width: 100%;" />
           </el-form-item>
@@ -65,7 +63,7 @@
 </template>
 
 <script setup>
-import { ref, reactive, computed, watch } from 'vue'
+import { ref, reactive, computed, watch, nextTick } from 'vue'
 import { ElMessage } from 'element-plus'
 import { Plus } from '@element-plus/icons-vue' // 引入 Plus 图标
 import { uploadFile } from '@/api/admin'
@@ -177,7 +175,22 @@ const handleUploadRequest = async (options) => {
     ElMessage.error('封面上传失败，请检查接口或网络')
   }
 }
+// 副文本
+const handleContentChange = (data) => {
+  console.log(data, '副文本内容')
+  formData.content = data.html
+}
 
+const editorInstance = ref(null)
+const handleEditorCreated = (editor) => {
+  editorInstance.value = editor
+  // 编辑
+  if (formData.content && editor) {
+  nextTick(() => {
+    editor.setHtml(formData.content)
+  })
+}
+}
 const handleSubmit = () => {
   formRef.value.validate((valid) => {
     if (valid) {
@@ -187,48 +200,3 @@ const handleSubmit = () => {
   })
 }
 </script>
-
-<style scoped>
-.cover-upload-container {
-    display: flex;
-    align-items: center;
-    gap: 16px;
-}
-
-.avatar-uploader :deep(.el-upload) {
-    border: 1px dashed var(--el-border-color);
-    border-radius: 6px;
-    cursor: pointer;
-    position: relative;
-    overflow: hidden;
-    transition: var(--el-transition-duration-fast);
-    width: 148px;
-    height: 148px;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-}
-
-.avatar-uploader :deep(.el-upload):hover {
-    border-color: var(--el-color-primary);
-}
-
-.cover-placeholder {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    color: #8c939d;
-}
-
-.uploader-icon {
-    font-size: 28px;
-    margin-bottom: 8px;
-}
-
-.cover-image {
-    width: 148px;
-    height: 148px;
-    object-fit: cover;
-    display: block;
-}
-</style>
