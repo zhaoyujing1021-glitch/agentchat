@@ -1,6 +1,6 @@
 <template>
     <el-dialog
-        title="文章详情"
+        :title="isEdit ? '编辑文章' : '新增文章'"
         v-model="dialogVisible"
         width="60%"
         @close="handleClose"
@@ -54,11 +54,9 @@
       </el-form>
 
       <template #footer>
-        <span class="dialog-footer">
-          <el-button @click="dialogVisible = false">取消</el-button>
-          <el-button type="primary" @click="handleSubmit">确定</el-button>
-          <el-button type="primary" @click="btnPreview = !btnPreview">{{ btnPreview ? '隐藏预览' : '预览效果' }}</el-button>
-        </span>
+        <el-button @click="btnPreview = !btnPreview">{{ btnPreview ? '隐藏预览' : '预览效果' }}</el-button>
+        <el-button @click="handleClose">取消</el-button>
+        <el-button type="primary" @click="handleSubmit" :loading="loading">{{ isEdit ? '更新文章' : '创建文章' }}</el-button>
       </template>
     </el-dialog>
 </template>
@@ -79,6 +77,10 @@ const props = defineProps({
   categories: {
     type: Array,
     default: () => []
+  },
+  article: {
+    type: Object,
+    default: null
   }
 })
 const emit = defineEmits(['update:modelValue', 'submit'])
@@ -91,12 +93,30 @@ const dialogVisible = computed({
     emit('update:modelValue', val)
   }
 })
+const currentArticle = ref(null)
 
-const formRef = ref(null)
+const isEdit = computed(() => !!props.article?.id)
+
+watch(() => props.article, (newVal) => {
+    if (newVal) {
+        Object.assign(formData, newVal)
+        // 使用现有ID
+        businessId.value = newVal.id
+        // 封面Url
+        imgUrl.value = fileBaseUrl + newVal.coverImage
+    }
+})
 
 const handleClose = () => {
-  formRef.value?.resetFields()
-  imgUrl.value = ''
+    // 重置表单
+    formRef.value.resetFields()
+    // 重置ID
+    businessId.value = null
+    // 重置标签
+    formData.tagArray = []
+    // 重置封面图片和数据
+    handleRemove()
+    emit('update:modelValue', false)
 }
 
 const handleRemove = (e) => {
@@ -114,8 +134,9 @@ const rules = reactive({
     { required: true, message: '请选择分类', trigger: 'change' }
   ],
   content: [
-    { required: true, message: '请输入文章内容', trigger: 'blur' }
-  ]
+  { required: true, message: '请输入文章内容', trigger: 'blur' },
+  { max: 5000, message: '文章内容最多5000个字符', trigger: 'blur' }
+  ],
 })
 
 const commonTags = [
@@ -150,14 +171,23 @@ const beforeUpload = (file) => {
   }
   return true
 }
+const businessId = ref(null)
 
 const handleUploadRequest = async (options) => {
   try {
     const file = options.file
     const uploadData = new FormData()
-    // 如果后端要求参数名叫其他名字，比如 'image'，请改成：
-    uploadData.append('file', file) // 或者是 'image'
+    
+    // 1. 将文件追加到 FormData 中（如果后端要求字段名叫 'image'，请自行修改）
+    uploadData.append('file', file)
 
+    // 2. 每次上传时生成或更新 UUID
+    businessId.value = crypto.randomUUID()
+    
+    // 3. 将 businessId 也追加进 FormData 中传给后端
+    uploadData.append('businessId', businessId.value)
+
+    // 4. 调用上传接口
     const res = await uploadFile(uploadData)
     console.log('上传接口返回：', res) // 可以在 F12 控制台打印看看结构
 
@@ -176,9 +206,10 @@ const handleUploadRequest = async (options) => {
     ElMessage.error('封面上传失败，请检查接口或网络')
   }
 }
-// 副文本
+
+// 富文本
 const handleContentChange = (data) => {
-  console.log(data, '副文本内容')
+  console.log(data, '富文本内容')
   formData.content = data.html
 }
 
@@ -192,12 +223,21 @@ const handleEditorCreated = (editor) => {
   })
 }
 }
+
+// 提交
+const formRef = ref()
+const loading = ref(false)
 const handleSubmit = () => {
-  formRef.value.validate((valid) => {
+  formRef.value.validate((valid, fields) => {
     if (valid) {
-      formData.tags = formData.tagArray.join(',')
-      emit('submit', { ...formData })
+      loading.value = true
     }
+    console.log(formData, 'FormData')
+    const submitData = {
+      ...formData,
+      tags: formData.tagArray.join(',')
+    }
+    delete submitData.tagArray
   })
 }
 </script>

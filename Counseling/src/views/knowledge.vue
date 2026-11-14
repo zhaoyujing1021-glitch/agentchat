@@ -2,7 +2,7 @@
   <div>
     <PageHead title="知识文章">
       <template #buttons>
-        <el-button @click="dialogVisible=true" type="primary">新增</el-button>
+        <el-button @click="handleEdit({})" type="primary">新增</el-button>
         <el-button type="primary">编辑</el-button>
       </template>
     </PageHead>
@@ -26,10 +26,10 @@
         </el-table-column>
         <el-table-column prop="authorName" label="作者" width="150" />
         <el-table-column prop="readCount" label="阅读量" width="150" />
-        <el-table-column prop="publishedAt" label="发布时间" width="150" />
+        <el-table-column prop="updatedAt" label="发布时间" width="150" />
         <el-table-column label="操作" width="240" fixed="right">
             <template #default="scope">
-                <el-button text type="primary">编辑</el-button>
+                <el-button @click="handleEdit(scope.row)" text type="primary">编辑</el-button>
                 <el-button v-if="scope.row.status === 0 || scope.row.status === 2" text type="success">发布</el-button>
                 <el-button v-if="scope.row.status === 1" text type="warning">下线</el-button>
                 <el-button text type="danger">删除</el-button>
@@ -43,20 +43,20 @@
       :total="pagination.total"
       @change="handleChange"
       />
-      <ArticleDialog v-model:modelValue="dialogVisible" :categories="categories" />
+      <ArticleDialog v-model="dialogVisible" :article="currentArticle" :categories="categoryList" @success="handleSuccess" />
   </div>
 </template>
 
 <script setup>
-import { onMounted, ref, reactive } from 'vue' // 1. 记得引入 reactive
+import { onMounted, ref, reactive } from 'vue'
 import PageHead from '@/components/PageHead.vue'
 import TableSearch from '@/components/TableSearch.vue'
-import { categoryTree, articlePage} from '@/api/admin'
+import { categoryTree, articlePage, getArticleDetail } from '@/api/admin'
 import ArticleDialog from '@/components/ArticleDialog.vue'
 
 const formItem = [
   { comp: 'input', prop: 'title', label: 'タイトル', placeholder: 'タイトル入力' },
-  { comp: 'select', prop: 'categoryId', label: 'カテゴリ', placeholder: 'カテゴリ選択', options: [] }, // 初始给个空数组
+  { comp: 'select', prop: 'categoryId', label: 'カテゴリ', placeholder: 'カテゴリ選択', options: [] },
   { comp: 'select', prop: 'status', label: '状态', placeholder: '请输入文章内容', options: [{
       label: '草稿',
       value: '0'
@@ -74,16 +74,13 @@ const handleChange = (page) => {
 }
 
 // 分页参数
-const pagination = reactive(
-  {
+const pagination = reactive({
   currentPage: 1,
   size: 10,
   total: 0
-  }
-)
+})
 
-
-const handleSearch =async (formData) => {
+const handleSearch = async (formData) => {
   console.log(formData, '查询参数')
 
   const params = {
@@ -93,21 +90,39 @@ const handleSearch =async (formData) => {
 
   const { records, total } = await articlePage(params)
   tableData.value = records
-  }
-
-
-
+  pagination.total = total // 顺便补上总条数更新，防止分页不生效
+}
 
 // 分类映射 (id -> name)
 const categoryMap = reactive({})
 
 // 分类列表 (给下拉框用的数组)
 const categoryList = ref([])
-//列表数据
-const tableData =ref([])
+// 列表数据
+const tableData = ref([])
 
 // 新增和编辑
 const dialogVisible = ref(false)
+const currentArticle = ref(null) // <--- 【核心修复点】在这里定义 currentArticle
+
+const handleSuccess = () => {
+  handleSearch() // 成功后刷新列表
+}
+
+const handleEdit = (row) => {
+    if (!row || !row.id) {
+      // 新增
+      currentArticle.value = null
+      dialogVisible.value = true
+    } else {
+      // 编辑
+      getArticleDetail(row.id).then(res => {
+        console.log(res, '编辑详情')
+        currentArticle.value = res
+        dialogVisible.value = true
+      })
+    }
+}
 
 onMounted(async () => {
     const data = await categoryTree()

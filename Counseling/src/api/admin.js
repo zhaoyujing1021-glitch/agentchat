@@ -11,7 +11,12 @@ export function articlePage(params) {
   return service.get('/knowledge/article/page', { params })
 }
 
-
+export function getArticleDetail(id) {
+  return request({
+    url: `/article/detail/${id}`, // 请根据你的实际后端接口路径修改
+    method: 'get'
+  })
+}
 
 export function uploadFile(file, businessInfo) {
   const formData = new FormData()
