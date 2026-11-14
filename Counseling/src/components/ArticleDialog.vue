@@ -57,6 +57,7 @@
         <span class="dialog-footer">
           <el-button @click="dialogVisible = false">取消</el-button>
           <el-button type="primary" @click="handleSubmit">确定</el-button>
+          <el-button type="primary" @click="btnPreview = !btnPreview">{{ btnPreview ? '隐藏预览' : '预览效果' }}</el-button>
         </span>
       </template>
     </el-dialog>
