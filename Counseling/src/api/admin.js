@@ -7,28 +7,28 @@ export function login(data) {
 export function categoryTree() {
     return service.get('/knowledge/category/tree')
 }
+
 export function articlePage(params) {
   return service.get('/knowledge/article/page', { params })
 }
 
 export function getArticleDetail(id) {
-  return request({
-    url: `/article/detail/${id}`, // 请根据你的实际后端接口路径修改
-    method: 'get'
-  })
+  return service.get(`/knowledge/article/detail/${id}`)
 }
 
-export function uploadFile(file, businessInfo) {
-  const formData = new FormData()
-  formData.append('file', file)
-  formData.append('businessType', 'ARTICLE')
-  formData.append('businessId', businessInfo.businessId)
-  formData.append('businessField', 'cover')
 
-  return service.post('/file/upload', formData, {
+export function uploadFile(formData) {
+  return service.post('/knowledge/file/upload', formData, {
     headers: {
       'Content-Type': 'multipart/form-data'
     }
   })
 }
 
+export function updateArticle(id, data) {
+    return service.put(`/knowledge/article/${id}`, data)
+}
+
+export function createArticle(data) {
+    return service.post('/knowledge/article', data)
+}

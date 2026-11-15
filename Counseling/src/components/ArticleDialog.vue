@@ -37,24 +37,30 @@
                     accept="image/*"
                 >
                     <div v-if="!imgUrl" class="cover-placeholder">
-                        <!-- 修复：加上了 Plus 图标组件 -->
                         <el-icon class="uploader-icon"><Plus /></el-icon>
                         <p>点击上传封面</p>
                     </div>
                     <img v-else :src="imgUrl" class="cover-image" alt="封面图片" />
                 </el-upload>
                 <div v-if="imgUrl" class="cover-remove-btn">
-                    <el-button type="danger" size="small" @click="handleRemove">移除封面</el-button>
+                    <el-button type="danger" size="small" @click.stop="handleRemove">移除封面</el-button>
                 </div>
             </div>
           </el-form-item>
+          
           <el-form-item label="文章内容" prop="content">
-              <RichTextEditor v-model="formData.content" :maxLength="5000" style="width: 100%;" />
+              <!-- 如果你的富文本组件支持自定义事件，可以绑定 @change 和 @created -->
+              <RichTextEditor 
+                v-model="formData.content" 
+                :maxLength="5000" 
+                style="width: 100%;" 
+                @change="handleContentChange"
+                @created="handleEditorCreated"
+              />
           </el-form-item>
       </el-form>
 
       <template #footer>
-        <el-button @click="btnPreview = !btnPreview">{{ btnPreview ? '隐藏预览' : '预览效果' }}</el-button>
         <el-button @click="handleClose">取消</el-button>
         <el-button type="primary" @click="handleSubmit" :loading="loading">{{ isEdit ? '更新文章' : '创建文章' }}</el-button>
       </template>
@@ -64,8 +70,8 @@
 <script setup>
 import { ref, reactive, computed, watch, nextTick } from 'vue'
 import { ElMessage } from 'element-plus'
-import { Plus } from '@element-plus/icons-vue' // 引入 Plus 图标
-import { uploadFile } from '@/api/admin'
+import { Plus } from '@element-plus/icons-vue'
+import { uploadFile, createArticle, updateArticle } from '@/api/admin'
 import { fileBaseUrl } from '@/config/index.js'
 import RichTextEditor from './RichTextEditor.vue'
 
@@ -83,7 +89,8 @@ const props = defineProps({
     default: null
   }
 })
-const emit = defineEmits(['update:modelValue', 'submit'])
+
+const emit = defineEmits(['update:modelValue', 'submit', 'success'])
 
 const dialogVisible = computed({
   get() {
@@ -93,34 +100,39 @@ const dialogVisible = computed({
     emit('update:modelValue', val)
   }
 })
+
+// 1. 保留并使用 currentArticle 用于记录当前编辑的对象
 const currentArticle = ref(null)
 
 const isEdit = computed(() => !!props.article?.id)
 
 watch(() => props.article, (newVal) => {
     if (newVal) {
+        currentArticle.value = newVal // 赋值给已声明的变量
         Object.assign(formData, newVal)
-        // 使用现有ID
+        
+        // 处理标签回显（把逗号分隔的字符串转为数组）
+        if (newVal.tags) {
+            formData.tagArray = newVal.tags.split(',').filter(Boolean)
+        }
+
         businessId.value = newVal.id
-        // 封面Url
-        imgUrl.value = fileBaseUrl + newVal.coverImage
+        if (newVal.coverImage) {
+            imgUrl.value = newVal.coverImage.startsWith('http') ? newVal.coverImage : fileBaseUrl + newVal.coverImage
+        }
     }
-})
+}, { immediate: true })
 
 const handleClose = () => {
-    // 重置表单
-    formRef.value.resetFields()
-    // 重置ID
+    formRef.value?.resetFields()
     businessId.value = null
-    // 重置标签
     formData.tagArray = []
-    // 重置封面图片和数据
+    currentArticle.value = null
     handleRemove()
     emit('update:modelValue', false)
 }
 
-const handleRemove = (e) => {
-    e.stopPropagation()
+const handleRemove = () => {
     imgUrl.value = ''
     formData.coverImage = ''
 }
@@ -131,11 +143,10 @@ const rules = reactive({
     { max: 200, message: '文章标题最多200个字符', trigger: 'blur' }
   ],
   categoryId: [
-    { required: true, message: '请选择分类', trigger: 'change' }
+    { required: true, message: '請选择分类', trigger: 'change' }
   ],
   content: [
-  { required: true, message: '请输入文章内容', trigger: 'blur' },
-  { max: 5000, message: '文章内容最多5000个字符', trigger: 'blur' }
+    { required: true, message: '请输入文章内容', trigger: 'blur' },
   ],
 })
 
@@ -157,6 +168,7 @@ const formData = reactive({
 })
 
 const imgUrl = ref('')
+const businessId = ref(null)
 
 const beforeUpload = (file) => {
   const isImage = file.type.startsWith('image/')
@@ -171,27 +183,25 @@ const beforeUpload = (file) => {
   }
   return true
 }
-const businessId = ref(null)
 
 const handleUploadRequest = async (options) => {
   try {
     const file = options.file
     const uploadData = new FormData()
     
-    // 1. 将文件追加到 FormData 中（如果后端要求字段名叫 'image'，请自行修改）
+    // 严格对照接口文档追加四个参数
     uploadData.append('file', file)
-
-    // 2. 每次上传时生成或更新 UUID
-    businessId.value = crypto.randomUUID()
+    uploadData.append('businessType', 'ARTICLE')
     
-    // 3. 将 businessId 也追加进 FormData 中传给后端
+    businessId.value = businessId.value || crypto.randomUUID()
     uploadData.append('businessId', businessId.value)
+    
+    uploadData.append('businessField', 'cover')
 
-    // 4. 调用上传接口
     const res = await uploadFile(uploadData)
-    console.log('上传接口返回：', res) // 可以在 F12 控制台打印看看结构
+    console.log('上传接口返回：', res)
 
-    // 根据你实际的后端返回调整（例如 res.data.url 或 res.path）
+
     const filePath = res.data || res.url || res.path 
     
     if (filePath) {
@@ -207,37 +217,55 @@ const handleUploadRequest = async (options) => {
   }
 }
 
-// 富文本
-const handleContentChange = (data) => {
-  console.log(data, '富文本内容')
-  formData.content = data.html
-}
-
+// 2. 将富文本相关方法挂载到模板中（如果 RichTextEditor 支持这些事件）
 const editorInstance = ref(null)
 const handleEditorCreated = (editor) => {
   editorInstance.value = editor
-  // 编辑
   if (formData.content && editor) {
-  nextTick(() => {
-    editor.setHtml(formData.content)
-  })
+    nextTick(() => {
+      editor.setHtml(formData.content)
+    })
+  }
 }
+const handleContentChange = (data) => {
+  formData.content = typeof data === 'string' ? data : data.html
+}
+
+// 3. 统一使用成功回调函数
+const handleSuccess = () => {
+    dialogVisible.value = false
+    emit('success') // 通知父组件刷新列表
 }
 
 // 提交
 const formRef = ref()
 const loading = ref(false)
 const handleSubmit = () => {
-  formRef.value.validate((valid, fields) => {
-    if (valid) {
-      loading.value = true
+  formRef.value.validate(async (valid) => {
+    if (!valid) return
+    
+    loading.value = true
+    try {
+        const submitData = {
+          ...formData,
+          tags: formData.tagArray.join(',')
+        }
+        delete submitData.tagArray
+
+        if (!isEdit.value) {
+            submitData.id = businessId.value
+            await createArticle(submitData)
+            ElMessage.success('创建文章成功')
+        } else {
+            await updateArticle(props.article.id, submitData)
+            ElMessage.success('更新文章成功')
+        }
+        handleSuccess() // 调用刚刚未使用的成功处理函数
+    } catch (error) {
+        console.error(error)
+    } finally {
+        loading.value = false
     }
-    console.log(formData, 'FormData')
-    const submitData = {
-      ...formData,
-      tags: formData.tagArray.join(',')
-    }
-    delete submitData.tagArray
   })
 }
 </script>
