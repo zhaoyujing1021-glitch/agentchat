@@ -32,3 +32,9 @@ export function updateArticle(id, data) {
 export function createArticle(data) {
     return service.post('/knowledge/article', data)
 }
+export function changeArticleStatus(id, data) {
+    return service.put(`/knowledge/article/${id}/status`, { status })
+}
+export function deleteArticle(id) {
+    return service.delete(`/knowledge/article/${id}`)
+}
