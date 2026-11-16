@@ -13,14 +13,3 @@ export const useAdminStore = defineStore('admin', () => {
     toggleCollapse
   }
 })
-export function createArticle(data) {
-  return service.post('/knowledge/article', data)
-}
-
-export function getArticleDetail(id) {
-  return service.get(`/knowledge/article/${id}`)
-}
-
-export function getEmotionalPage(params) {
-    return service.get('/emotion-diary/admin/page', { params })
-}

@@ -9,20 +9,19 @@ export function categoryTree() {
 }
 
 export function articlePage(params) {
-  return service.get('/knowledge/article/page', { params })
+    return service.get('/knowledge/article/page', { params })
 }
 
 export function getArticleDetail(id) {
-  return service.get(`/knowledge/article/detail/${id}`)
+    return service.get(`/knowledge/article/detail/${id}`)
 }
 
-
 export function uploadFile(formData) {
-  return service.post('/knowledge/file/upload', formData, {
-    headers: {
-      'Content-Type': 'multipart/form-data'
-    }
-  })
+    return service.post('/knowledge/file/upload', formData, {
+        headers: {
+            'Content-Type': 'multipart/form-data'
+        }
+    })
 }
 
 export function updateArticle(id, data) {
@@ -32,13 +31,19 @@ export function updateArticle(id, data) {
 export function createArticle(data) {
     return service.post('/knowledge/article', data)
 }
+
 export function changeArticleStatus(id, data) {
-    return service.put(`/knowledge/article/${id}/status`, { status })
+    return service.put(`/knowledge/article/${id}/status`, data)
 }
+
 export function deleteArticle(id) {
     return service.delete(`/knowledge/article/${id}`)
 }
 
 export function getConsultationPage(params) {
     return service.get('/psychological-chat/sessions', { params })
+}
+
+export function getEmotionalPage(params) {
+    return service.get('/emotion-diary/admin/page', { params })
 }
