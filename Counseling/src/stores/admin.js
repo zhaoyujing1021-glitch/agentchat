@@ -20,3 +20,7 @@ export function createArticle(data) {
 export function getArticleDetail(id) {
   return service.get(`/knowledge/article/${id}`)
 }
+
+export function getEmotionalPage(params) {
+    return service.get('/emotion-diary/admin/page', { params })
+}

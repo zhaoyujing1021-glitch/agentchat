@@ -314,3 +314,21 @@ body {
     display: block;
 }
 /* views/ArticleDialog----end------------------- */
+
+
+/* views/consultations.vue----------------------- */
+
+.session-title {
+    font-size: 14px;
+    color: #303133;
+    margin-bottom: 4px;
+}
+.session-preview {
+    color: #909399;
+    font-size: 12px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    max-width: 100%; 
+}
+/* views/consultations.vue----end------------------- */
