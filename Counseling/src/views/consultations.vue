@@ -24,7 +24,7 @@
             <el-table-column prop="lastMessageTime" label="时间" width="180" />
             <el-table-column label="操作" width="100" fixed="right">
                 <template #default="scope">
-                    <el-button @click="viewSessionDetail(scope.row)" type="primary" text>详情</el-button>
+                    <el-button type="primary" text @click="viewSessionDetail(scope.row)">详情</el-button>
                 </template>
             </el-table-column>
         </el-table>
@@ -35,13 +35,53 @@
             :total="pagination.total"
             @change="handleChange"
         />
+        <el-dialog
+            v-model="showDetailDialog"
+            title="咨询会话详情"
+            width="70%"
+            :close-on-click-modal="false"
+        >
+            <div class="session-detail">
+                <div class="detail-header">
+                    <div class="detail-row">
+                        <div class="detail-label">用户：</div>
+                        <div class="detail-value">{{sessionDetail.userNickname}}</div>
+                    </div>
+                    <div class="detail-row">
+                        <div class="detail-label">开始时间：</div>
+                        <div class="detail-value">{{ sessionDetail.startedAt }}</div>
+                    </div>
+                    <div class="detail-row">
+                        <div class="detail-label">消息数：</div>
+                        <div class="detail-value">{{ sessionDetail.messageCount }}</div>
+                    </div>
+                </div>
+                <div class="messages-container">
+                    <div class="messages-header">
+                        <h4>对话记录</h4>
+                    </div>
+                    <div class="messages-list" v-loading="LoadingMessages">
+                        <div v-for="message in sessionMessages" :key="message.id" class="message-item" :class="message.senderType === 1 ? 'user-message' : 'ai-message'">
+                            <div class="message-header-info">
+                                <span class="sender">{{ message.senderType === 1 ? '用户' : 'AI助手' }}</span>
+                                <span class="time">{{ message.createdAt }}</span>
+                            </div>
+                            <div class="message-content">{{ message.content }}</div>
+                        </div>
+                    </div>
+                </div>  
+            </div>
+            <template #footer>
+                <el-button @click="showDetailDialog = false">关闭</el-button>
+            </template>
+        </el-dialog>
     </div>
 </template>
 
 <script setup>
 import { onMounted, ref, reactive } from 'vue'
 import PageHead from '@/components/PageHead.vue'
-import { getConsultationPage } from '@/api/admin'
+import { getConsultationPage,getSessionDetail } from '@/api/admin'
 
 const tableData = ref([])
 
@@ -50,6 +90,23 @@ const pagination = reactive({
     size: 10,
     total: 0
 })
+
+
+// 会话详情
+const showDetailDialog = ref(false)
+const sessionDetail = ref({})
+const sessionMessages = ref([])
+const LoadingMessages = ref(false)
+
+const viewSessionDetail = (row) => {
+    LoadingMessages.value=true
+    getSessionDetail(row.id).then(res => {
+        LoadingMessages.value=false
+        sessionMessages.value = res
+        sessionDetail.value = row
+        showDetailDialog.value = true
+    })
+}
 
 const currentFormData = ref({})
 
@@ -63,12 +120,6 @@ const getNickName = (row) => {
         || ''
 }
 
-const viewSessionDetail = (row) => {
-    const sessionId = row.sessionId || row.id
-    console.log('查看会话详情，ID:', sessionId)
-    // 后续可在此处实现跳转至详情页或打开对话详情弹窗
-    // 对应接口: /psychological-chat/sessions/{sessionId}/messages
-}
 
 const handleChange = (page) => {
     pagination.currentPage = page
