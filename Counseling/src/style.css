@@ -409,3 +409,62 @@ body {
 }
 /* views/consultations/详情-----end-------------- */
 /* views/consultations.vue----end------------------- */
+
+/* views/emotional.vue----------------------- */
+.ai-analysis-result {
+  background-color: #fff;
+  border: 1px solid #ebeef5;
+  border-radius: 8px;
+  padding: 16px;
+  margin-top: 8px;
+
+  .ai-suggestion-section,
+  .ai-risk-section,
+  .ai-improvements-section {
+    margin-top: 16px;
+    padding: 12px;
+    background-color: #fafafa;
+    border-radius: 6px;
+    border: 1px solid #ebeef5;
+  }
+
+  h5 {
+    margin: 0 0 8px 0;
+    color: #303133;
+    font-size: 14px;
+    font-weight: 600;
+  }
+
+  .suggestion-content,
+  .risk-content {
+    line-height: 1.6;
+    color: #606266;
+    background-color: #ffffff;
+    padding: 10px 14px;
+    border-radius: 4px;
+    border: 1px solid #dcdfe6; 
+    font-size: 14px;
+  }
+
+  .improvement-list {
+    margin: 0;
+    padding-left: 20px;
+    background-color: #ffffff;
+    padding: 10px 14px 10px 34px;
+    border-radius: 4px;
+    border: 1px solid #dcdfe6;
+
+    li {
+      margin-bottom: 6px;
+      color: #606266;
+      font-size: 14px;
+      line-height: 1.5;
+      list-style-type: disc;
+    }
+    li:last-child {
+      margin-bottom: 0;
+    }
+  }
+}
+/* views/emotional.vue-----end------------------ */
+ 

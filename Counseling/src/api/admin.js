@@ -51,3 +51,6 @@ export function getEmotionalPage(params) {
  export function getSessionDetail(sessionId) {
     return service.get(`/psychological-chat/sessions/${sessionId}/messages`)
 }
+export function deleteEmotional(id) {
+  return service.delete(`/emotion-diary/admin/${id}`)
+}
