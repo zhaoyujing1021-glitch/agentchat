@@ -7,7 +7,7 @@
           <Expand />
         </el-icon>
       </el-button>
-      <p class="page-titie">导航栏</p>
+      <p class="page-titie">{{ route.meta.title }}</p>
     </div>
     <div class="flex-box">
       <el-dropdown @command="handleCommand">
@@ -30,17 +30,35 @@
 
 <script setup>
 import { useAdminStore } from '@/stores/admin'
+import { useRouter,useRoute } from "vue-router";
+import { ElMessage, ElMessageBox } from 'element-plus'
+
 
 const adminStore = useAdminStore()
-
+const router = useRouter()
+const route = useRoute()
 
 const handleCollapse = () => {
   adminStore.toggleCollapse()
+
 }
 
 const handleCommand = (command) => {
+  console.log(command)
   if (command === 'logout') {
-
+    // 处理退出登录逻辑
+    ElMessageBox.confirm('确定退出登录吗？', '提示', {
+      confirmButtonText: '确定',
+      cancelButtonText: '取消',
+      type: 'warning'
+    }).then(() => {
+      // 确认退出登录
+      // 清除缓存
+      localStorage.removeItem('token')
+      localStorage.removeItem('userInfo')
+      // 跳转到登录页
+      router.push('/auth/login')
+    })
   }
 }
 </script>
