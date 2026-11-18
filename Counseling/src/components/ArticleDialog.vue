@@ -1,70 +1,58 @@
 <template>
-    <el-dialog
-        :title="isEdit ? '编辑文章' : '新增文章'"
-        v-model="dialogVisible"
-        width="60%"
-        @close="handleClose"
-    >
-      <el-form :model="formData" :rules="rules" ref="formRef" label-width="120px">
-          <el-form-item label="文章标题" prop="title">
-              <el-input v-model="formData.title" placeholder="请输入文章标题" maxlength="200" show-word-limit/>
-          </el-form-item>
+  <el-dialog :title="isEdit ? '编辑文章' : '新增文章'" v-model="dialogVisible" width="60%" @close="handleClose">
+    <el-form :model="formData" :rules="rules" ref="formRef" label-width="120px">
+      <el-form-item label="文章标题" prop="title">
+        <el-input v-model="formData.title" placeholder="请输入文章标题" maxlength="200" show-word-limit />
+      </el-form-item>
 
-          <el-form-item label="所属分类" prop="categoryId">
-              <el-select v-model="formData.categoryId" placeholder="请选择分类" style="width: 100%">
-                  <el-option v-for="item in categories" :key="item.value" :label="item.label" :value="item.value" />
-              </el-select>
-          </el-form-item>
+      <el-form-item label="所属分类" prop="categoryId">
+        <el-select v-model="formData.categoryId" placeholder="请选择分类" style="width: 100%">
+          <el-option v-for="item in categories" :key="item.value" :label="item.label" :value="item.value" />
+        </el-select>
+      </el-form-item>
 
-          <el-form-item label="文章摘要" prop="summary">
-              <el-input type="textarea" v-model="formData.summary" placeholder="请输入文章摘要(可选)" maxlength="1000" show-word-limit :rows="4" clearable />
-          </el-form-item>
+      <el-form-item label="文章摘要" prop="summary">
+        <el-input type="textarea" v-model="formData.summary" placeholder="请输入文章摘要(可选)" maxlength="1000" show-word-limit
+          :rows="4" clearable />
+      </el-form-item>
 
-          <el-form-item label="文章标签" prop="tags">
-            <el-select v-model="formData.tagArray" placeholder="请选择或输入文章标签" multiple filterable allow-create style="width: 100%">
-                <el-option v-for="tag in commonTags" :key="tag" :label="tag" :value="tag" />
-            </el-select>
-          </el-form-item>
+      <el-form-item label="文章标签" prop="tags">
+        <el-select v-model="formData.tagArray" placeholder="请选择或输入文章标签" multiple filterable allow-create
+          style="width: 100%">
+          <el-option v-for="tag in commonTags" :key="tag" :label="tag" :value="tag" />
+        </el-select>
+      </el-form-item>
 
-          <el-form-item label="封面图片">
-            <div class="cover-upload-container">
-                <el-upload
-                    class="avatar-uploader"
-                    action="#"
-                    :before-upload="beforeUpload"
-                    :http-request="handleUploadRequest"
-                    :show-file-list="false"
-                    accept="image/*"
-                >
-                    <div v-if="!imgUrl" class="cover-placeholder">
-                        <el-icon class="uploader-icon"><Plus /></el-icon>
-                        <p>点击上传封面</p>
-                    </div>
-                    <img v-else :src="imgUrl" class="cover-image" alt="封面图片" />
-                </el-upload>
-                <div v-if="imgUrl" class="cover-remove-btn">
-                    <el-button type="danger" size="small" @click.stop="handleRemove">移除封面</el-button>
-                </div>
+      <el-form-item label="封面图片">
+        <div class="cover-upload-container">
+          <el-upload class="avatar-uploader" action="#" :before-upload="beforeUpload"
+            :http-request="handleUploadRequest" :show-file-list="false" accept="image/*">
+            <div v-if="!imgUrl" class="cover-placeholder">
+              <el-icon class="uploader-icon">
+                <Plus />
+              </el-icon>
+              <p>点击上传封面</p>
             </div>
-          </el-form-item>
-          
-          <el-form-item label="文章内容" prop="content">
-              <!-- 如果你的富文本组件支持自定义事件，可以绑定 @change 和 @created -->
-              <RichTextEditor 
-                v-model="formData.content" 
-                :maxLength="5000" 
-                style="width: 100%;" 
-                @change="handleContentChange"
-                @created="handleEditorCreated"
-              />
-          </el-form-item>
-      </el-form>
+            <img v-else :src="imgUrl" class="cover-image" alt="封面图片" />
+          </el-upload>
+          <div v-if="imgUrl" class="cover-remove-btn">
+            <el-button type="danger" size="small" @click.stop="handleRemove">移除封面</el-button>
+          </div>
+        </div>
+      </el-form-item>
 
-      <template #footer>
-        <el-button @click="handleClose">取消</el-button>
-        <el-button type="primary" @click="handleSubmit" :loading="loading">{{ isEdit ? '更新文章' : '创建文章' }}</el-button>
-      </template>
-    </el-dialog>
+      <el-form-item label="文章内容" prop="content">
+        <!-- 如果你的富文本组件支持自定义事件，可以绑定 @change 和 @created -->
+        <RichTextEditor v-model="formData.content" :maxLength="5000" style="width: 100%;" @change="handleContentChange"
+          @created="handleEditorCreated" />
+      </el-form-item>
+    </el-form>
+
+    <template #footer>
+      <el-button @click="handleClose">取消</el-button>
+      <el-button type="primary" @click="handleSubmit" :loading="loading">{{ isEdit ? '更新文章' : '创建文章' }}</el-button>
+    </template>
+  </el-dialog>
 </template>
 
 <script setup>
@@ -107,34 +95,34 @@ const currentArticle = ref(null)
 const isEdit = computed(() => !!props.article?.id)
 
 watch(() => props.article, (newVal) => {
-    if (newVal) {
-        currentArticle.value = newVal // 赋值给已声明的变量
-        Object.assign(formData, newVal)
-        
-        // 处理标签回显（把逗号分隔的字符串转为数组）
-        if (newVal.tags) {
-            formData.tagArray = newVal.tags.split(',').filter(Boolean)
-        }
+  if (newVal) {
+    currentArticle.value = newVal // 赋值给已声明的变量
+    Object.assign(formData, newVal)
 
-        businessId.value = newVal.id
-        if (newVal.coverImage) {
-            imgUrl.value = newVal.coverImage.startsWith('http') ? newVal.coverImage : fileBaseUrl + newVal.coverImage
-        }
+    // 处理标签回显（把逗号分隔的字符串转为数组）
+    if (newVal.tags) {
+      formData.tagArray = newVal.tags.split(',').filter(Boolean)
     }
+
+    businessId.value = newVal.id
+    if (newVal.coverImage) {
+      imgUrl.value = newVal.coverImage.startsWith('http') ? newVal.coverImage : fileBaseUrl + newVal.coverImage
+    }
+  }
 }, { immediate: true })
 
 const handleClose = () => {
-    formRef.value?.resetFields()
-    businessId.value = null
-    formData.tagArray = []
-    currentArticle.value = null
-    handleRemove()
-    emit('update:modelValue', false)
+  formRef.value?.resetFields()
+  businessId.value = null
+  formData.tagArray = []
+  currentArticle.value = null
+  handleRemove()
+  emit('update:modelValue', false)
 }
 
 const handleRemove = () => {
-    imgUrl.value = ''
-    formData.coverImage = ''
+  imgUrl.value = ''
+  formData.coverImage = ''
 }
 
 const rules = reactive({
@@ -157,14 +145,14 @@ const commonTags = [
 ]
 
 const formData = reactive({
-    id: "",
-    title: "",
-    content: "",
-    coverImage: "", 
-    categoryId: '',
-    summary: "",
-    tags: "",
-    tagArray: [] 
+  id: "",
+  title: "",
+  content: "",
+  coverImage: "",
+  categoryId: '',
+  summary: "",
+  tags: "",
+  tagArray: []
 })
 
 const imgUrl = ref('')
@@ -188,22 +176,22 @@ const handleUploadRequest = async (options) => {
   try {
     const file = options.file
     const uploadData = new FormData()
-    
+
     // 严格对照接口文档追加四个参数
     uploadData.append('file', file)
     uploadData.append('businessType', 'ARTICLE')
-    
+
     businessId.value = businessId.value || crypto.randomUUID()
     uploadData.append('businessId', businessId.value)
-    
+
     uploadData.append('businessField', 'cover')
 
     const res = await uploadFile(uploadData)
     console.log('上传接口返回：', res)
 
 
-    const filePath = res.data || res.url || res.path 
-    
+    const filePath = res.data || res.url || res.path
+
     if (filePath) {
       formData.coverImage = filePath
       imgUrl.value = fileBaseUrl ? `${fileBaseUrl}${filePath}` : filePath
@@ -233,8 +221,8 @@ const handleContentChange = (data) => {
 
 // 3. 统一使用成功回调函数
 const handleSuccess = () => {
-    dialogVisible.value = false
-    emit('success') // 通知父组件刷新列表
+  dialogVisible.value = false
+  emit('success') // 通知父组件刷新列表
 }
 
 // 提交
@@ -243,28 +231,28 @@ const loading = ref(false)
 const handleSubmit = () => {
   formRef.value.validate(async (valid) => {
     if (!valid) return
-    
+
     loading.value = true
     try {
-        const submitData = {
-          ...formData,
-          tags: formData.tagArray.join(',')
-        }
-        delete submitData.tagArray
+      const submitData = {
+        ...formData,
+        tags: formData.tagArray.join(',')
+      }
+      delete submitData.tagArray
 
-        if (!isEdit.value) {
-            submitData.id = businessId.value
-            await createArticle(submitData)
-            ElMessage.success('创建文章成功')
-        } else {
-            await updateArticle(props.article.id, submitData)
-            ElMessage.success('更新文章成功')
-        }
-        handleSuccess() // 调用刚刚未使用的成功处理函数
+      if (!isEdit.value) {
+        submitData.id = businessId.value
+        await createArticle(submitData)
+        ElMessage.success('创建文章成功')
+      } else {
+        await updateArticle(props.article.id, submitData)
+        ElMessage.success('更新文章成功')
+      }
+      handleSuccess() // 调用刚刚未使用的成功处理函数
     } catch (error) {
-        console.error(error)
+      console.error(error)
     } finally {
-        loading.value = false
+      loading.value = false
     }
   })
 }

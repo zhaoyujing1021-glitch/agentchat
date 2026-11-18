@@ -1,31 +1,17 @@
 <template>
   <div class="editor-container">
     <!-- 工具栏 -->
-    <Toolbar
-      class="editor-toolbar"
-      :editor="editorRef"
-      :defaultConfig="toolbarConfig"
-      :mode="mode"
-    />
+    <Toolbar class="editor-toolbar" :editor="editorRef" :defaultConfig="toolbarConfig" :mode="mode" />
 
     <!-- 编辑区域 -->
-    <Editor
-      class="editor-content"
-      v-model="valueHtml"
-      :defaultConfig="editorConfig"
-      :mode="mode"
-      @onCreated="handleCreated"
-      @onChange="handleChange"
-    />
+    <Editor class="editor-content" v-model="valueHtml" :defaultConfig="editorConfig" :mode="mode"
+      @onCreated="handleCreated" @onChange="handleChange" />
 
     <!-- 底部字数统计栏 -->
     <div class="editor-footer">
       <span class="word-count">{{ textLength }} / {{ maxLength }}</span>
       <div class="progress-bar">
-        <div
-          class="progress-fill"
-          :style="{ width: `${Math.min((textLength / maxLength) * 100, 100)}%` }"
-        ></div>
+        <div class="progress-fill" :style="{ width: `${Math.min((textLength / maxLength) * 100, 100)}%` }"></div>
       </div>
     </div>
   </div>
@@ -139,60 +125,3 @@ onBeforeUnmount(() => {
   editor.destroy()
 })
 </script>
-
-<style scoped>
-.editor-container {
-  width: 100%;
-  border: 1px solid #e4e7ed;
-  border-radius: 4px;
-  background-color: #ffffff;
-  overflow: hidden;
-}
-
-.editor-toolbar {
-  border-bottom: 1px solid #f0f0f0;
-  background-color: #fafafa;
-}
-
-.editor-content {
-  height: 400px;
-  overflow-y: hidden;
-}
-
-.editor-footer {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  padding: 10px 16px;
-  border-top: 1px solid #f0f0f0;
-  background-color: #ffffff;
-  font-size: 12px;
-  color: #909399;
-}
-
-.word-count {
-  font-variant-numeric: tabular-nums;
-}
-
-.progress-bar {
-  width: 60px;
-  height: 4px;
-  background-color: #ebeef5;
-  border-radius: 2px;
-  overflow: hidden;
-}
-
-.progress-fill {
-  height: 100%;
-  background-color: #409eff;
-  transition: width 0.2s ease;
-}
-
-/* 调整 placeholder 样式与换行显示 */
-:deep(.w-e-text-placeholder) {
-  color: #a8abb2;
-  font-style: normal;
-  white-space: pre-wrap;
-  line-height: 1.6;
-}
-</style>

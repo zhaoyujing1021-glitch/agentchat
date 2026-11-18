@@ -2,7 +2,9 @@
     <div class="container">
         <div class="title">
             <div class="back-home">
-                <el-icon><Back /></el-icon>
+                <el-icon>
+                    <Back />
+                </el-icon>
                 <span>返回首页</span>
             </div>
             <div class="title-text">
@@ -11,17 +13,13 @@
             </div>
         </div>
         <div class="form-container">
-            <el-form
-                ref="ruleFormRef"
-                :model="formData"
-                :rules="rules"
-                label-position="top"
-            >
+            <el-form ref="ruleFormRef" :model="formData" :rules="rules" label-position="top">
                 <el-form-item label="用户名或邮箱" prop="username">
                     <el-input v-model="formData.username" size="large" placeholder="请输入用户名" />
                 </el-form-item>
                 <el-form-item label="密码" prop="password">
-                    <el-input v-model="formData.password" size="large" placeholder="请输入密码" type="password" showp-password />
+                    <el-input v-model="formData.password" size="large" placeholder="请输入密码" type="password"
+                        showp-password />
                 </el-form-item>
                 <el-form-item>
                     <el-button class="btn" size="large" type="primary" @click="submitForm(ruleFormRef)">登录</el-button>
@@ -37,7 +35,7 @@
 
 <script setup>
 import { ref, reactive } from 'vue'
-import {login} from '@/api/admin'
+import { login } from '@/api/admin'
 import { useRouter } from 'vue-router'
 const ruleFormRef = ref()
 
@@ -55,11 +53,11 @@ const rules = reactive({
 })
 
 // 登录
-const router =useRouter()
+const router = useRouter()
 const submitForm = async (formEl) => {
     await formEl.validate((valid, fields) => {
         if (valid) {
-            console.log(formData,'formData')
+            console.log(formData, 'formData')
             login(formData).then(data => {
                 // 判断token是否存在
                 if (!data.token) {
@@ -72,7 +70,7 @@ const submitForm = async (formEl) => {
                 if (data.userInfo.userType === 2) {
                     router.push('/back/dashboard')
                 } else {
-                    
+
                 }
             })
         }

@@ -16,39 +16,29 @@
                 </template>
             </el-table-column>
             <el-table-column label="生活指标" width="120">
-              <template #default="scope">
-                  <div>
-                      <p>
-                          睡眠: {{ scope.row.sleepQuality }} / 5
-                      </p>
-                      <p>
-                          压力: {{ scope.row.stressLevel }} / 5
-                      </p>
-                  </div>
-              </template>
-          </el-table-column>
-          <el-table-column prop="emotionTriggers" label="情绪触发因素" width="120" />
-          <el-table-column prop="diaryContent" label="日记内容" width="250" />
-          <el-table-column label="操作" width="240" fixed="right">
-              <template #default="scope">
-                  <el-button @click="viewSessionDetail(scope.row)" text type="primary" >详情</el-button>
-                  <el-button @click="handleDelete(scope.row)" text type="danger">删除</el-button>
-              </template>
-          </el-table-column>
+                <template #default="scope">
+                    <div>
+                        <p>
+                            睡眠: {{ scope.row.sleepQuality }} / 5
+                        </p>
+                        <p>
+                            压力: {{ scope.row.stressLevel }} / 5
+                        </p>
+                    </div>
+                </template>
+            </el-table-column>
+            <el-table-column prop="emotionTriggers" label="情绪触发因素" width="120" />
+            <el-table-column prop="diaryContent" label="日记内容" width="250" />
+            <el-table-column label="操作" width="240" fixed="right">
+                <template #default="scope">
+                    <el-button @click="viewSessionDetail(scope.row)" text type="primary">详情</el-button>
+                    <el-button @click="handleDelete(scope.row)" text type="danger">删除</el-button>
+                </template>
+            </el-table-column>
         </el-table>
-        <el-pagination
-            style="margin-top: 25px;"
-            :page-size="pagination.size"
-            layout="prev, pager, next"
-            :total="pagination.total"
-            @change="handleChange"
-        />
-        <el-dialog
-            v-model="detailDialogVisible"
-            title="情绪日志详情"
-            width="800px"
-            :close-on-click-modal="false"
-        >
+        <el-pagination style="margin-top: 25px;" :page-size="pagination.size" layout="prev, pager, next"
+            :total="pagination.total" @change="handleChange" />
+        <el-dialog v-model="detailDialogVisible" title="情绪日志详情" width="800px" :close-on-click-modal="false">
             <div class="detail-content" v-if="currentDetail">
                 <div class="detail-section">
                     <h4>用户信息</h4>
@@ -65,22 +55,27 @@
                     <h4>情绪状态</h4>
                     <el-descriptions :column="2" border>
                         <el-descriptions-item label="情绪评分">
-                        <el-rate :model-value="currentDetail.moodScore" :max="10" disabled />
+                            <el-rate :model-value="currentDetail.moodScore" :max="10" disabled />
                         </el-descriptions-item>
                         <el-descriptions-item label="主要情绪">
-                        <el-tag :type="getEmotionTagType(currentDetail.dominantEmotion)">{{ currentDetail.dominantEmotion || '-' }}</el-tag>
+                            <el-tag :type="getEmotionTagType(currentDetail.dominantEmotion)">{{
+                                currentDetail.dominantEmotion ||
+                                '-' }}</el-tag>
                         </el-descriptions-item>
-                        <el-descriptions-item label="睡眠质量">{{ currentDetail.sleepQuality || '-' }}/5</el-descriptions-item>
-                        <el-descriptions-item label="压力水平">{{ currentDetail.stressLevel || '-' }}/5</el-descriptions-item>
+                        <el-descriptions-item label="睡眠质量">{{ currentDetail.sleepQuality || '-'
+                            }}/5</el-descriptions-item>
+                        <el-descriptions-item label="压力水平">{{ currentDetail.stressLevel || '-'
+                            }}/5</el-descriptions-item>
                     </el-descriptions>
                 </div>
             </div>
             <div class="detail-section">
                 <h4>日记内容</h4>
                 <el-descriptions :column="1" border>
-                    <el-descriptions-item label="情绪触发因素">{{ currentDetail.emotionTriggers || '无' }}</el-descriptions-item>
+                    <el-descriptions-item label="情绪触发因素">{{ currentDetail.emotionTriggers || '无'
+                        }}</el-descriptions-item>
                     <el-descriptions-item label="日记内容">{{ currentDetail.diaryContent || '无' }}</el-descriptions-item>
-                
+
                 </el-descriptions>
             </div>
             <div class="detail-section">
@@ -89,16 +84,21 @@
                     <!-- 顶部的 2 列属性表格 -->
                     <el-descriptions :column="2" border>
                         <el-descriptions-item label="主要情绪">
-                            <el-tag :type="getAiEmotionTagType(aiData.primaryEmotion)">{{ aiData.primaryEmotion }}</el-tag>
+                            <el-tag :type="getAiEmotionTagType(aiData.primaryEmotion)">{{ aiData.primaryEmotion
+                                }}</el-tag>
                         </el-descriptions-item>
                         <el-descriptions-item label="情绪强度">
-                            <el-progress :percentage="aiData.emotionScore" :color="getEmotionScoreColor(aiData.emotionScore)" :stroke-width="8" />
+                            <el-progress :percentage="aiData.emotionScore"
+                                :color="getEmotionScoreColor(aiData.emotionScore)" :stroke-width="8" />
                         </el-descriptions-item>
                         <el-descriptions-item label="风险等级">
-                            <el-tag :type="getAiEmotionTagType(aiData.primaryEmotion)">{{ aiData.riskLevel ?? aiData.primaryEmotion }}</el-tag>
+                            <el-tag :type="getAiEmotionTagType(aiData.primaryEmotion)">{{ aiData.riskLevel ??
+                                aiData.primaryEmotion }}</el-tag>
                         </el-descriptions-item>
                         <el-descriptions-item label="情绪性质">
-                            <el-tag :type="aiData.isNegative ? 'danger' : 'success'">{{ aiData.isNegative ? '负面情绪' : '正面情绪' }}</el-tag>
+                            <el-tag :type="aiData.isNegative ? 'danger' : 'success'">{{ aiData.isNegative ? '负面情绪' :
+                                '正面情绪'
+                                }}</el-tag>
                         </el-descriptions-item>
                     </el-descriptions>
 
@@ -147,50 +147,50 @@ import { ElMessageBox } from 'element-plus'
 
 const formItem = [
     { comp: 'input', prop: 'userId', label: '用户ID', placeholder: '请输入用户ID' },
-    { 
-        comp: 'select', 
-        prop: 'moodScore', 
-        label: '情绪评分', 
-        placeholder: '请选择评分范围', 
+    {
+        comp: 'select',
+        prop: 'moodScore',
+        label: '情绪评分',
+        placeholder: '请选择评分范围',
         options: [
             { label: '低分(1-3)', value: '1-3' },
             { label: '中分(4-6)', value: '4-6' },
             { label: '高分(7-10)', value: '7-10' }
-        ] 
+        ]
     }
 ]
 
 // 情绪标签类型
 const getEmotionTagType = (emotion) => {
-  const emotionTypes = {
-    '快乐': 'success',
-    '平静': 'info',
-    '兴奋': 'warning',
-    '愤怒': 'danger',
-    '悲伤': 'info',
-    '焦虑': 'warning'
-  }
-  return emotionTypes[emotion] || 'info'
+    const emotionTypes = {
+        '快乐': 'success',
+        '平静': 'info',
+        '兴奋': 'warning',
+        '愤怒': 'danger',
+        '悲伤': 'info',
+        '焦虑': 'warning'
+    }
+    return emotionTypes[emotion] || 'info'
 }
 
 // AI 情绪标签类型
 const getAiEmotionTagType = (emotion) => {
-  const emotionTypes = {
-    '快乐': 'success',
-    '平静': 'info',
-    '兴奋': 'warning',
-    '愤怒': 'danger',
-    '悲伤': 'info',
-    '焦虑': 'warning'
-  }
-  return emotionTypes[emotion] || 'info'
+    const emotionTypes = {
+        '快乐': 'success',
+        '平静': 'info',
+        '兴奋': 'warning',
+        '愤怒': 'danger',
+        '悲伤': 'info',
+        '焦虑': 'warning'
+    }
+    return emotionTypes[emotion] || 'info'
 }
 
 const getEmotionScoreColor = (score) => {
-  if (score >= 80) return '#f56c6c'
-  if (score >= 60) return '#e6a23c'
-  if (score >= 40) return '#909399'
-  return '#67c23a'
+    if (score >= 80) return '#f56c6c'
+    if (score >= 60) return '#e6a23c'
+    if (score >= 40) return '#909399'
+    return '#67c23a'
 }
 
 // 列表数据
@@ -212,7 +212,7 @@ const handleSearch = async (formData = {}) => {
     if (formData) {
         currentFormData.value = formData
         // 每次点击搜索时，重置回到第一页
-        pagination.currentPage = 1 
+        pagination.currentPage = 1
     }
 
     const params = {
@@ -239,7 +239,7 @@ const handleChange = (page) => {
         size: pagination.size,
         ...currentFormData.value
     }
-    
+
     getEmotionalPage(params).then(res => {
         tableData.value = res.records
         pagination.total = res.total
@@ -251,31 +251,31 @@ const detailDialogVisible = ref(false)
 const currentDetail = ref(null)
 const aiData = ref(null)
 const viewSessionDetail = (row) => {
-  currentDetail.value = row
-  if (row.aiEmotionAnalysis) {
-    try {
-      aiData.value = JSON.parse(row.aiEmotionAnalysis)
-    } catch (e) {
-      aiData.value = {}
+    currentDetail.value = row
+    if (row.aiEmotionAnalysis) {
+        try {
+            aiData.value = JSON.parse(row.aiEmotionAnalysis)
+        } catch (e) {
+            aiData.value = {}
+        }
+    } else {
+        aiData.value = {}
     }
-  } else {
-    aiData.value = {}
-  }
-  detailDialogVisible.value = true
+    detailDialogVisible.value = true
 }
 
 // 删除
 const handleDelete = (row) => {
-  ElMessageBox.confirm('确定删除该条记录吗？', '删除确认', {
-    confirmButtonText: '确定',
-    cancelButtonText: '取消',
-    type: 'danger'
-  }).then(() => {
-    deleteEmotional(row.id).then(() => {
-      // 删除成功后保持当前搜索条件重新查询
-      handleSearch(currentFormData.value)
-    })
-  }).catch(() => {})
+    ElMessageBox.confirm('确定删除该条记录吗？', '删除确认', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'danger'
+    }).then(() => {
+        deleteEmotional(row.id).then(() => {
+            // 删除成功后保持当前搜索条件重新查询
+            handleSearch(currentFormData.value)
+        })
+    }).catch(() => { })
 }
 
 onMounted(() => {
