@@ -611,3 +611,133 @@ body {
   line-height: 1.6;
 }
 /* components/RichTextEditor.vue-----end------------------ */
+
+/* components/FrontendLayout.vue----------------------- */
+.frontend-layout {
+  background-color: #fff;
+  .navbar-container {
+    max-width: 1200px;
+    height: 100%;
+    margin: 0 auto;
+    padding: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    .brand-section {
+      display: flex;
+      align-items: center;
+      .brand-name {
+        margin-left: 10px;
+        font-size: 24px;
+        font-weight: 600;
+        color: #333;
+      }
+    }
+    .nav-section {
+      display: flex;
+      align-items: center;
+      gap: 40px;
+      .nav-link {
+        color: #4b5563;
+        font-size: 16px;
+        font-weight: 500;
+        &:hover {
+          color: #4A90E2;
+        }
+      }
+    }
+  }
+
+  .footer-container {
+    background: #1f2937;
+    color: white;
+    padding: 15px 0;
+    margin-top: auto;
+    .footer-bottom {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 0 10px;
+      text-align: center;
+    }
+  }
+}
+/* components/FrontendLayout.vue-----end------------------ */
+
+/* components/home.vue----------------------- */
+.home-container {
+  background: linear-gradient(90deg, rgb(74, 156, 140) 0%, rgb(61, 138, 122) 100%) rgba(74, 156, 140, 0.95);
+  color: white;
+  padding: 5rem 0;
+  height: calc(100vh - 285px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  .content {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 30px;
+    .text {
+      width: 500px;
+      .title {
+        font-size: 45px;
+        font-weight: bold;
+        line-height: 1.2;
+        margin-bottom: 15px;
+        .highlight-text {
+          color: #ffd700;
+        }
+      }
+    }
+    .hero-actions {
+      margin-top: 30px;
+    }
+  }
+  .robot {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 260px;
+    height: 260px;
+    border-radius: 50%;
+    border: 2px solid rgba(255, 255, 255, 0.2);
+    background: linear-gradient(135deg, rgba(255, 255, 255, 0.15) 0%, rgba(255, 255, 255, 0.05) 100%);
+    box-shadow: 0 15px 35px rgba(0, 0, 0, 0.1), inset 0 1px 0 rgba(255, 255, 255, 0.3);
+  }
+}
+
+/* components/home.vue-----end------------------ */
+
+/* components/register.vue----------------------- */
+.container {
+  width: 384px;
+  .flex-box {
+    display: flex;
+    align-items: center;
+  }
+  .title {
+    .title-text {
+      text-align: center;
+      h2 {
+        font-size: 36px;
+        margin-bottom: 10px;
+      }
+      p {
+        font-size: 18px;
+        color: #6b7280;
+      }
+    }
+  }
+  .form-container {
+    margin-top: 30px;
+    .btn {
+      margin-top: 40px;
+      width: 100%;
+    }
+  }
+  .footer {
+    padding: 30px;
+    text-align: center;
+  }
+}
+/* components/register.vue-----end------------------ */

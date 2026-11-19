@@ -1,6 +1,7 @@
 import { createRouter, createWebHistory } from 'vue-router'
 import BackendLayout from '@/components/BackendLayout.vue'
 import AuthLayout from '@/components/AuthLayout.vue'
+import FrontendLayout from '@/components/FrontendLayout.vue'
 
 //アクセス バックエンド
 const backendRoutes = [
@@ -64,30 +65,59 @@ const backendRoutes = [
     ]
   }
 ]
-
+const frontendRoutes = [
+  {
+    path: '/',
+    component: FrontendLayout,
+    children: [
+      {
+        path: '',
+        component: () => import('@/views/home.vue')
+      },
+      {
+        path: 'consultation',
+        component: () => import('@/views/consultation.vue')
+      },
+      {
+        path: 'emotion-diary',
+        component: () => import('@/views/emotionDiary.vue')
+      },
+      {
+        path: 'knowledge',
+        component: () => import('@/views/frontendKnowledge.vue')
+      }
+    ]
+  }
+]
 const router = createRouter({
   history: createWebHistory(),
-  routes: backendRoutes
+  routes: [...backendRoutes, ...frontendRoutes]
 })
+
 
 // 路由前置守卫
 router.beforeEach((to, from, next) => {
   const token = localStorage.getItem('token')
-  
+
   if (token) {
     try {
       const userInfoStr = localStorage.getItem('userInfo')
       const userInfo = userInfoStr ? JSON.parse(userInfoStr) : null
-      
+
       if (userInfo && userInfo.userType == 2) {
         if (to.path.startsWith('/back')) {
           next()
         } else {
           next('/back/dashboard')
         }
-      } else {
-        // 【修改】如果 userType 不是 2 或者 userInfo 为空，防止卡死，给个默认处理或放行
-        next()
+      } else if (userInfo.userType == 1) {
+        // 用户端账号只能访问前台路由
+        if (to.path.startsWith('/back') || to.path.startsWith('/auth')) {
+          next('/')
+        } else {
+          next()
+        }
+
       }
     } catch (e) {
       // 解析 JSON 失败说明缓存脏了，清除并跳回登录
@@ -103,5 +133,6 @@ router.beforeEach((to, from, next) => {
     }
   }
 })
+
 
 export default router

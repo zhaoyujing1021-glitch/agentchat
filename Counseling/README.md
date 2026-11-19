@@ -13,3 +13,15 @@ Learn more about IDE Support for Vue in the [Vue Docs Scaling up Guide](https://
   
 - JavaScript Visualization
   - Echart https://echarts.apache.org/zh/index.html
+  - 
+{
+    "username": "wen",
+    "email": "1111@gmail.com",
+    "nickname": "w",
+    "phone": "13586795875",
+    "password": "123456a",
+    "confirmPassword": "123456a",
+    "gender": 0,
+    "userType": 1
+}
+
