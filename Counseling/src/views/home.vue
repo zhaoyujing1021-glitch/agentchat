@@ -22,6 +22,6 @@
 <script setup>
 import { ref, onMounted } from 'vue'
 
-const iconUrl = new URL('@/assets/images/robot-fill.png', import.meta.url).href
+const iconUrl = new URL('@/assets/images/robot.png', import.meta.url).href
 
 </script>

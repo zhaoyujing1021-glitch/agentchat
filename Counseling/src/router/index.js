@@ -59,7 +59,7 @@ const backendRoutes = [
         path: 'register',
         component: () => import('@/views/register.vue'),
         meta: {
-          title: '注册', // 【修改】原先meta.title重复写成了登录
+          title: '注册', 
         }
       }
     ]

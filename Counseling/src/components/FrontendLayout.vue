@@ -37,7 +37,7 @@ import { useRouter } from 'vue-router'
 
 const router = useRouter()
 
-const iconUrl = new URL('@/assets/images/机器人.png', import.meta.url).href
+const iconUrl = new URL('@/assets/images/robot.png', import.meta.url).href
 
 const isLoggedIn = ref(false)
 // 登出
