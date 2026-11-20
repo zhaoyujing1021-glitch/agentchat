@@ -1283,8 +1283,6 @@ body {
           }
         }
       }
-
-      /* 错误消息样式 */
       .error-message {
         background: linear-gradient(135deg, #FEF2F2 0%, #FECACA 100%);
         border: 1px solid #F87171;

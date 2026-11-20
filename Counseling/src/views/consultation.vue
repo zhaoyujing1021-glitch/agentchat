@@ -46,21 +46,67 @@
           </div>
         </div>
       </div>
+      <!-- 消息输入区域 -->
+      <div class="chat-input">
+        <div class="input-container">
+          <el-input
+            v-model="userMessage"
+            placeholder="请输入您想要分享的内容..."
+            type="textarea"
+            :rows="3"
+            :disabled="isAiTying"
+            @keydown="handleKeyDown"
+            class="message-input"
+            clearable />
+        </div>
+        <el-button type="primary" class="send-btn" @click="sendMessage">
+          <el-icon>
+            <Promotion />
+          </el-icon>
+        </el-button>
+      </div>
     </div>
   </div>
 </template>
 
 <script setup>
-import { ref } from 'vue'
+import { ref, onMounted  } from 'vue'
 import { Plus } from '@element-plus/icons-vue'
+import { startSession } from '@/api/frontend'
 
 const iconUrl = new URL('@/assets/images/robot-fill.png', import.meta.url).href
 const iconUrl1 = new URL('@/assets/images/like.png', import.meta.url).href
 
+
+// 新建会话
 const createNewFrontendSession = () => {
-  // 新建会话逻辑
+  // 创建一个新的会话对象
+  const newSession = {
+    sessionId: `temp_${Date.now()}`,
+    status: 'TEMP',
+    sessionTitle: '新对话'
+  }
+  currentSession.value = newSession
 }
 
+// 定义一个当前会话对象
+const currentSession = ref(null)
 // 定义对话消息
 const message = ref([])
+// 定义用户输入消息
+const userMessage = ref('')
+// 定义AI助手是否正在输入
+const isAiTyping = ref(false)
+
+const handleKeyDown = (e) => {
+  if (e.key === 'Enter' && !e.shiftKey) {
+    e.preventDefault()
+    sendMessage()
+  }
+}
+
+onMounted(() => {
+  // 初始化时创建一个新会话
+  createNewFrontendSession()
+})
 </script>
