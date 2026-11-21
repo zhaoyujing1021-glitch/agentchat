@@ -49,15 +49,8 @@
       <!-- 消息输入区域 -->
       <div class="chat-input">
         <div class="input-container">
-          <el-input
-            v-model="userMessage"
-            placeholder="请输入您想要分享的内容..."
-            type="textarea"
-            :rows="3"
-            :disabled="isAiTying"
-            @keydown="handleKeyDown"
-            class="message-input"
-            clearable />
+          <el-input v-model="userMessage" placeholder="请输入您想要分享的内容..." type="textarea" :rows="3" :disabled="isAiTying"
+            @keydown="handleKeyDown" class="message-input" clearable />
         </div>
         <el-button type="primary" class="send-btn" @click="sendMessage">
           <el-icon>
@@ -70,9 +63,10 @@
 </template>
 
 <script setup>
-import { ref, onMounted  } from 'vue'
+import { ref, onMounted } from 'vue'
 import { Plus } from '@element-plus/icons-vue'
 import { startSession } from '@/api/frontend'
+import { ElMessage } from 'element-plus'
 
 const iconUrl = new URL('@/assets/images/robot-fill.png', import.meta.url).href
 const iconUrl1 = new URL('@/assets/images/like.png', import.meta.url).href
@@ -97,12 +91,58 @@ const message = ref([])
 const userMessage = ref('')
 // 定义AI助手是否正在输入
 const isAiTyping = ref(false)
-
+//定义处理键盘事件
 const handleKeyDown = (e) => {
   if (e.key === 'Enter' && !e.shiftKey) {
     e.preventDefault()
     sendMessage()
   }
+}
+const sendMessage = () => {
+  if (!userMessage.value.trim()) return
+
+  if (isAiTyping.value) {
+    ElMessage.error('AI助手正在输入中，请稍后')
+    return
+  }
+
+  const message = userMessage.value.trim()
+  userMessage.value = ''
+
+  // 如果没有会话或者是临时会话，就需要创建一个新的会话
+  if (currentSession.value.status === 'TEMP') {
+    startNewSession(message)
+  }
+}
+
+const startNewSession = (message) => {
+  // 构建会话参数
+  const sessionParams = {
+    initialMessage: message
+  }
+  if (currentSession.value.sessionTitle === '新对话') {
+    sessionParams.sessionTitle = `宁渡AI助手 - ${new Date().toLocaleString()}`
+  } else {
+    // 如果历史会话记录
+    sessionParams.sessionTitle = currentSession.value.sessionTitle
+  }
+  // 调用后端接口创建新会话
+  startSession(sessionParams).then(res => {
+    // 将后端返回的数据转为前端会话格式
+    const sessionData = {
+      sessionId: res.sessionId,
+      status: res.status,
+      sessionTitle: sessionParams.sessionTitle
+    }
+    // 如果当前是临时会话，更新数据
+    if (currentSession.value && currentSession.value.status === 'TEMP') {
+      // 更新为正式会话
+      Object.assign(currentSession.value, sessionData)
+    } else {
+      // 否则，创建一个新的会话
+      currentSession.value = sessionData
+    }
+  })
 }
 
 onMounted(() => {
