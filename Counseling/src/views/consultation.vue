@@ -12,6 +12,47 @@
           在线服务中
         </div>
       </div>
+      <!-- 会话列表 -->
+      <div class="session-history">
+        <h4 class="section-title">会话列表</h4>
+        <div class="session-list">
+          <div v-for="session in sessionList" :key="session.id" @click="handleSessionClick(session)"
+            class="session-item">
+            <div class="session-info">
+              <div class="session-title">
+                <span>{{ session.sessionTitle }}</span>
+                <div class="session-meta">
+                  <span class="session-time">{{ session.startedAt }}</span>
+                </div>
+                <div class="session-preview">
+                  {{ session.lastMessageContent }}
+                </div>
+                <div class="session-stats">
+                  <span>
+                    <el-icon>
+                      <ChatRound />
+                    </el-icon>
+                    {{ session.messageCount || 0 }}
+                  </span>
+                  <span>
+                    <el-icon>
+                      <Clock />
+                    </el-icon>
+                    {{ session.durationMinutes || 0 }} 分钟
+                  </span>
+                </div>
+              </div>
+              <div class="session-actions">
+                <el-button text type="danger" size="mini" @click="handleDeleteSession(session.id)">
+                  <el-icon>
+                    <DeleteFilled />
+                  </el-icon>
+                </el-button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
     </div>
 
     <div class="chat-main">
@@ -65,7 +106,7 @@
 <script setup>
 import { ref, onMounted } from 'vue'
 import { Plus } from '@element-plus/icons-vue'
-import { startSession } from '@/api/frontend'
+import { startSession, getSessionList } from '@/api/frontend'
 import { ElMessage } from 'element-plus'
 
 const iconUrl = new URL('@/assets/images/robot-fill.png', import.meta.url).href
@@ -85,6 +126,7 @@ const createNewFrontendSession = () => {
 
 // 定义一个当前会话对象
 const currentSession = ref(null)
+const sessionList = ref([])
 // 定义对话消息
 const message = ref([])
 // 定义用户输入消息
@@ -142,10 +184,29 @@ const startNewSession = (message) => {
       // 否则，创建一个新的会话
       currentSession.value = sessionData
     }
+    // 更新会话列表
+    getSessionPage()
+  })
+}
+const getSessionPage = () => {
+  getSessionList({
+    pageNum: 1,
+    pageSize: 10
+  }).then(res => {
+    console.log(res)
+    sessionList.value = res.records
   })
 }
 
+const handleSessionClick = () => {
+
+}
+const handleDeleteSession = () => {
+
+}
+
 onMounted(() => {
+  getSessionPage()
   // 初始化时创建一个新会话
   createNewFrontendSession()
 })
