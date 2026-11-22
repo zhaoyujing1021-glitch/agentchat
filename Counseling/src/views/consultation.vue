@@ -86,12 +86,47 @@
             <div class="message-time">刚刚</div>
           </div>
         </div>
+        <!-- 消息列表 -->
+        <div v-for="msg in message" :key="msg.id" class="message-item"
+          :class="msg.senderType === 1 ? 'user-message' : 'ai-message'">
+          <div class="message-avatar">
+            <el-image v-if="msg.senderType === 1" style="width: 18px; height: 18px" :src="iconUrl2"></el-image>
+            <el-image v-if="msg.senderType === 2" style="width: 18px; height: 18px" :src="iconUrl"></el-image>
+          </div>
+          <div class="message-content">
+            <div class="message-bubble">
+              <!-- AI正在思考中 -->
+              <div v-if="msg.senderType === 2 && isAiTyping && !msg.content" class="typing-indicator">
+                <div class="typing-dot"></div>
+                <div class="typing-dot"></div>
+                <div class="typing-dot"></div>
+              </div>
+              <!-- AI错误提示 -->
+              <div v-else-if="msg.isError" class="error-message">
+                <p>{{ msg.content }}</p>
+              </div>
+              <!-- AI正常返回消息 -->
+              <MarkdownRenderer v-else-if="msg.senderType === 2 && !msg.isError" :content="msg.content"
+                :is-ai-message="true" />
+              <p v-else-if="msg.content" v-html="formatMessageContent(msg.content)"></p>
+            </div>
+            <div class="message-time">{{ msg.senderType === 2 && isAiTyping ? '正在输入中...' : msg.createdAt }}</div>
+          </div>
+        </div>
       </div>
       <!-- 消息输入区域 -->
       <div class="chat-input">
         <div class="input-container">
-          <el-input v-model="userMessage" placeholder="请输入您想要分享的内容..." type="textarea" :rows="3" :disabled="isAiTying"
-            @keydown="handleKeyDown" class="message-input" clearable />
+          <el-input
+            v-model="userMessage"
+            placeholder="请输入您想要分享的内容..."
+            type="textarea"
+            :rows="3"
+            :disabled="isAiTyping"
+            @keydown="handleKeyDown"
+            class="message-input"
+            clearable
+          />
         </div>
         <el-button type="primary" class="send-btn" @click="sendMessage">
           <el-icon>
@@ -106,12 +141,13 @@
 <script setup>
 import { ref, onMounted } from 'vue'
 import { Plus } from '@element-plus/icons-vue'
-import { startSession, getSessionList } from '@/api/frontend'
+import { startSession, getSessionList, deleteSession, getSessionDetail } from '@/api/frontend'
 import { ElMessage } from 'element-plus'
+import MarkdownRenderer from '@/components/MarkdownRenderer.vue'
 
 const iconUrl = new URL('@/assets/images/robot-fill.png', import.meta.url).href
 const iconUrl1 = new URL('@/assets/images/like.png', import.meta.url).href
-
+const iconUrl2 = new URL('@/assets/images/users.png', import.meta.url).href
 
 // 新建会话
 const createNewFrontendSession = () => {
@@ -198,13 +234,27 @@ const getSessionPage = () => {
   })
 }
 
-const handleSessionClick = () => {
-
+// 获取会话数据
+const handleSessionClick = (session) => {
+  console.log(session, 'session')
+  // 点击会话时，获取会话详情
+  getSessionDetail(session.id).then(res => {
+    console.log(res)
+    message.value = res
+  })
 }
-const handleDeleteSession = () => {
 
+const handleDeleteSession = (sessionId) => {
+  deleteSession(sessionId).then(res => {
+    ElMessage.success('删除成功')
+    getSessionPage()
+  })
 }
 
+// 简单的换行逻辑
+const formatMessageContent = (content) => {
+  return content.replace(/\n/g, '<br>')
+}
 onMounted(() => {
   getSessionPage()
   // 初始化时创建一个新会话

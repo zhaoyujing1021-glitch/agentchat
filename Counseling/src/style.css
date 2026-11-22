@@ -253,7 +253,7 @@ body {
 }
 /* views/login----end------------------- */
 
-/* views/ArticleDialog----------------------- */
+/* components/ArticleDialog.vue----------------------- */
 
 .cover-placeholder {
     width: 200px;
@@ -313,7 +313,7 @@ body {
     object-fit: cover;
     display: block;
 }
-/* views/ArticleDialog----end------------------- */
+/* components/ArticleDialog.vue----end------------------- */
 
 
 /* views/consultations.vue----------------------- */
@@ -331,7 +331,7 @@ body {
     white-space: nowrap;
     max-width: 100%; 
 }
-/* views/consultations/详情----------------------- */
+/* views/consultations.vue 详情----------------------- */
 .detail-header {
     margin-bottom: 20px;
     padding: 16px;
@@ -407,7 +407,7 @@ body {
     margin-top: 8px;
     font-size: 14px;
 }
-/* views/consultations/详情-----end-------------- */
+/* views/consultations.vue 详情-----end-------------- */
 /* views/consultations.vue----end------------------- */
 
 /* views/emotional.vue----------------------- */
@@ -663,7 +663,7 @@ body {
 }
 /* components/FrontendLayout.vue-----end------------------ */
 
-/* components/home.vue----------------------- */
+/* views/home.vue----------------------- */
 .home-container {
   background: linear-gradient(90deg, rgb(74, 156, 140) 0%, rgb(61, 138, 122) 100%) rgba(74, 156, 140, 0.95);
   color: white;
@@ -706,9 +706,9 @@ body {
   }
 }
 
-/* components/home.vue-----end------------------ */
+/* views/home.vue-----end------------------ */
 
-/* components/register.vue----------------------- */
+/* views/register.vue----------------------- */
 .container {
   width: 384px;
   .flex-box {
@@ -740,9 +740,9 @@ body {
     text-align: center;
   }
 }
-/* components/register.vue-----end------------------ */
+/* views/register.vue-----end------------------ */
 
-/* components/consultation.vue----------------------- */
+/* views/consultation.vue----------------------- */
 .consultation-container {
   margin: 0 auto;
   width: 1200px;
@@ -1336,4 +1336,87 @@ body {
     }
   }
 }
-/* components/consultation.vue-------end---------------- */
+/* views/consultation.vue-------end---------------- */
+
+/* components/MarkdownRenderer.vue----------------------- */
+
+
+.markdown-content {
+  line-height: 1.6;
+  color: inherit;
+}
+
+.markdown-content h1,
+.markdown-content h2,
+.markdown-content h3 {
+  margin: 1em 0 0.5em 0;
+  font-weight: 600;
+  line-height: 1.3;
+}
+
+.markdown-content h1 {
+  font-size: 1.5em;
+  border-bottom: 2px solid #e5e7eb;
+  padding-bottom: 0.3em;
+}
+
+.markdown-content h2 {
+  font-size: 1.3em;
+  color: #374151;
+}
+
+.markdown-content h3 {
+  font-size: 1.1em;
+  color: #4b5563;
+}
+
+.markdown-content p {
+  margin: 0.5em 0;
+}
+
+.markdown-content ul,
+.markdown-content ol {
+  margin: 0.5em 0;
+  padding-left: 1.5em;
+}
+
+.markdown-content li {
+  margin: 0.3em 0;
+}
+
+.markdown-content blockquote {
+  border-left: 4px solid #d1d5db;
+  padding-left: 1em;
+  margin: 1em 0;
+  color: #6b7280;
+  font-style: italic;
+  background: #f9fafb;
+  border-radius: 0 0.5em 0.5em 0;
+  padding: 0.5em 1em;
+}
+
+.ai-markdown blockquote {
+  border-left-color: #3b82f6;
+  background: #eff6ff;
+}
+
+.markdown-content hr {
+  border: none;
+  border-top: 2px solid #e5e7eb;
+  margin: 1.5em 0;
+}
+
+.markdown-content code.inline-code {
+  background: #f3f4f6;
+  padding: 0.2em 0.4em;
+  border-radius: 0.25em;
+  font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace;
+  font-size: 0.85em;
+  color: #e11d48;
+}
+
+.ai-markdown code.inline-code {
+  background: #dbeafe;
+  color: #1e40af;
+}
+/* components/MarkdownRenderer.vue-----------end------------ */
