@@ -13,7 +13,8 @@ Learn more about IDE Support for Vue in the [Vue Docs Scaling up Guide](https://
   
 - JavaScript Visualization
   - Echart https://echarts.apache.org/zh/index.html
-  - 
+  
+```
 {
     "username": "wen",
     "email": "1111@gmail.com",
@@ -24,4 +25,14 @@ Learn more about IDE Support for Vue in the [Vue Docs Scaling up Guide](https://
     "gender": 0,
     "userType": 1
 }
+```
 
+## バックエンド
+
+* JDK: [https://www.oracle.com/java/technologies/downloads/](https://www.oracle.com/java/technologies/downloads/)
+* APIドキュメント: [https://xsl1e23zpk.apifox.cn](https://xsl1e23zpk.apifox.cn)
+* IntelliJ IDEA: [https://www.jetbrains.com.cn/idea/](https://www.jetbrains.com.cn/idea/)
+* MySQL: [https://dev.mysql.com/downloads/installer/](https://dev.mysql.com/downloads/installer/)
+* Mavenリポジトリ検索: [https://search.maven.org/](https://search.maven.org/)
+* オンラインJWTトークン解析ツール: [https://config.net.cn/tools/Jwt.html](https://config.net.cn/tools/Jwt.html)
+* SiliconFlow（シリコンフロー）: [https://www.siliconflow.cn/](https://www.siliconflow.cn/)

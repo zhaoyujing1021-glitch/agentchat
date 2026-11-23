@@ -59,7 +59,7 @@ const backendRoutes = [
         path: 'register',
         component: () => import('@/views/register.vue'),
         meta: {
-          title: '注册', 
+          title: '注册',
         }
       }
     ]
@@ -85,6 +85,11 @@ const frontendRoutes = [
       {
         path: 'knowledge',
         component: () => import('@/views/frontendKnowledge.vue')
+      },
+      {
+        path: 'knowledge/article/:id',
+        component: () => import('@/views/articleDetail.vue'),
+        props: true
       }
     ]
   }

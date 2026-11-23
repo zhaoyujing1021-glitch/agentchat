@@ -11,7 +11,7 @@
       <div class="recommend-section">
         <div class="section-title">推荐阅读</div>
         <div class="recommend-list">
-          <div v-for="item in recommendList" :key="item.id" class="recommend-item">
+          <div v-for="item in recommendList" :key="item.id" class="recommend-item"@click="goToArticle(item.id)">
             <h4>{{ item.title }}</h4>
             <p class="read-count">
               <el-icon>
@@ -24,7 +24,7 @@
       </div>
       <!-- 右侧内容 -->
       <div class="article-list">
-        <div v-for="item in articleList" :key="item.id" class="article-item">
+        <div v-for="item in articleList" :key="item.id" class="article-item" @click="goToArticle(item.id)">
           <el-image style="width: 240px; height: 150px" :src="getImage(item.coverImage)"></el-image>
           <div class="info">
             <div class="title">
@@ -73,7 +73,9 @@
 import { dayjs, ElMessage } from 'element-plus'
 import { ref, reactive, onMounted } from 'vue'
 import { addEmotionDiary, getKnowledgeList } from '@/api/frontend'
+import { useRouter } from 'vue-router'
 
+const router = useRouter()
 // 推荐阅读列表
 const recommendList = ref([])
 
@@ -104,6 +106,10 @@ const getImage = (url) => {
 const handleChange = (currentPage) => {
   pagination.currentPage = currentPage
   getPageList()
+}
+// 跳转到详情
+const goToArticle = (id) => {
+  router.push(`/knowledge/article/${id}`)
 }
 onMounted(() => {
   // 获取推荐阅读列表

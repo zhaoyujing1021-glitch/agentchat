@@ -24,4 +24,6 @@ export const addEmotionDiary = (data) => {
 export const getKnowledgeList = (params) => {
   return service.get('/knowledge/article/page', { params })
 }
-
+export const getKnowledgeDetail = (articleId) => {
+  return service.get(`/knowledge/article/${articleId}`)
+}
