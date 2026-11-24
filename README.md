@@ -19,4 +19,7 @@
 * オンラインJWTトークン解析ツール: [https://config.net.cn/tools/Jwt.html](https://config.net.cn/tools/Jwt.html)
 * SiliconFlow（シリコンフロー）: [https://www.siliconflow.cn/](https://www.siliconflow.cn/)
   
-起動：.\mvnw.cmd spring-boot:run
+起動：
+Win + R -> services.msc->MySQL57
+.\mvnw.cmd spring-boot:run
+http://localhost:1236/
