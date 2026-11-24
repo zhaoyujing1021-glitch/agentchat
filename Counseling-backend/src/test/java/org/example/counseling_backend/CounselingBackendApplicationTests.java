@@ -1,10 +1,10 @@
-package org.example.ai_springboot;
+package org.example.counseling_backend;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 
 @SpringBootTest
-class AiSpringbootApplicationTests {
+class CounselingBackendApplicationTests {
 
 	@Test
 	void contextLoads() {

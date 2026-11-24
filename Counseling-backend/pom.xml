@@ -9,9 +9,9 @@
 		<relativePath/> <!-- lookup parent from repository -->
 	</parent>
 	<groupId>org.example</groupId>
-	<artifactId>ai-springboot</artifactId>
+	<artifactId>Counseling-backend</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
-	<name>ai-springboot</name>
+	<name>Counseling-backend</name>
 	<description/>
 	<url/>
 	<licenses>
