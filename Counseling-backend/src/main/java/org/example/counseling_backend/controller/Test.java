@@ -13,6 +13,6 @@ import org.springframework.web.bind.annotation.RestController;
 public class Test {
   @GetMapping("/test")
   public Result<String> test() {
-    return Result.ok();
+    return Result.ok("hello");
   }
 }
