@@ -41,14 +41,17 @@ const iconUrl = new URL('@/assets/images/robot.png', import.meta.url).href
 
 const isLoggedIn = ref(false)
 // 登出
-const handleLogout = () => {
-  logout().then(() => {
-    // 清除缓存
+const handleLogout = async () => {
+  try {
+    await logout()
+  } catch (error) {
+    console.warn('退出接口请求失败，仍执行本地退出：', error)
+  } finally {
     localStorage.removeItem('token')
     localStorage.removeItem('userInfo')
-    // 跳转到登录页
+    isLoggedIn.value = false
     router.push('/auth/login')
-  })
+  }
 }
 
 onMounted(() => {
